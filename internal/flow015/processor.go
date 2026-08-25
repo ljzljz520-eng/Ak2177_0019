@@ -24,7 +24,6 @@ func (p *Processor) Allocate(slots []model.TimeSlot) *SlotChain {
 	var tail *slotNode
 	for _, slot := range slots {
 		node := &slotNode{item: slot}
-		defer p.release(node)
 		if head == nil {
 			head = node
 		} else {
@@ -34,12 +33,6 @@ func (p *Processor) Allocate(slots []model.TimeSlot) *SlotChain {
 		p.last = node
 	}
 	return &SlotChain{head: head}
-}
-
-func (p *Processor) release(node *slotNode) {
-	if node.next != nil {
-		node.item = node.next.item
-	}
 }
 
 func (c *SlotChain) Values() []model.TimeSlot {
